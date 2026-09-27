@@ -143,7 +143,7 @@ hyprctl reload
 #----------------------------------Part 2 : Removing bloatware and installing all what needed---------------------------------
 
 #2.0 Removing bloatware and web apps
-for pkg in chromium  aether kdenlive moonlight-qt obs-studio; do
+for pkg in chromium  aether kdenlive moonlight-qt obs-studio cliamp; do
   pacman -Qq "$pkg" &>/dev/null && sudo pacman -R --noconfirm "$pkg"
 done
 omarchy-webapp-remove hey
