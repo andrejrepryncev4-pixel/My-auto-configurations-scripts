@@ -160,6 +160,12 @@ omarchy-webapp-remove google-messages
 #2.1 Installing what neeeded from pacman/aur
 sudo pacman -S --noconfirm firefox base-devel git jre-openjdk 7zip  qbittorrent python  gnome-boxes steam htop 
 
+#2.1.1.1 Setting the firefox and links for it as main and rebooting hyperland 
+xdg-settings set default-web-browser firefox.desktop
+xdg-mime default firefox.desktop x-scheme-handler/http
+xdg-mime default firefox.desktop x-scheme-handler/https
+hyprctl reload
+
 
 #2.1.2 The sepparate line for wine cuz its important 
 sudo pacman -S --noconfirm wine wine-mono wine-gecko winetricks
@@ -167,6 +173,90 @@ yay -S --noconfirm ttf-ms-fonts
 
 #2.1.4 Yay installing things 
 yay -S --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify elyprismlauncher-bin hydra-launcher-bin
+
+# 2.2 ADDED: All required Qylock, Qt5, Qt6, and GStreamer dependencies
+echo "--> Installing login screen theme dependencies..."
+sudo pacman -S --noconfirm \
+    sddm perl \
+    qt5-declarative qt5-graphicaleffects qt5-quickcontrols2 qt5-multimedia \
+    qt6-multimedia qt6-multimedia-ffmpeg \
+    gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
+
+#----------------------------------Part 2.2 : Plugins Installation ----------------------------
+
+echo "Starting Omarchy plugins installation phase..."
+
+# 2.2.1. Network status
+echo "Installing Network Speed status plugin..."
+omarchy plugin add https://github.com/brightwalker25/omarchy-net-speed.git --enable
+echo "============================================================"
+echo " ACTION REQUIRED: Network Speed plugin installed!"
+echo " The script will now open the Omarchy plugin settings."
+echo " Configure your network units (bits/bytes) and panel view."
+echo " Once done, PRESS [ENTER] IN THIS TERMINAL to continue."
+echo "============================================================"
+omarchy menu summon style.plugins &
+read -p "Waiting for Network Speed setup... Press Enter: "
+
+# 2.2.2. Git notifications and actions
+echo "Istalling Foamy GitHub plugin..."
+omarchy plugin add https://github.com/foamrider/foamy-github.git --enable
+echo "============================================================"
+echo " ACTION REQUIRED: GitHub plugin installed!"
+echo " Please click the widget cog and configure your repository paths."
+echo " Once done, PRESS [ENTER] IN THIS TERMINAL to continue."
+echo "============================================================"
+read -p "Waiting for GitHub setup... Press Enter: "
+
+# 2.2.3. Audio control
+echo "Installing Foamy Audio control plugin..."
+omarchy plugin add https://github.com/foamrider/foamy-audio.git --enable
+echo "============================================================"
+echo " ACTION REQUIRED: Audio plugin installed!"
+echo " Open the panel, check your PipeWire outputs or AirPlay setup."
+echo " Once done, PRESS [ENTER] IN THIS TERMINAL to continue."
+echo "============================================================"
+read -p "Waiting for Audio setup... Press Enter: "
+
+# 2.2.4. The system resources usage
+echo "Installing Foamy Vitals resource plugin..."
+omarchy plugin add https://github.com/foamrider/foamy-vitals.git --enable
+echo "============================================================"
+echo " ACTION REQUIRED: Vitals resource plugin installed!"
+echo " Configure your warning thresholds or CPU/GPU temperature sensors."
+echo " Once done, PRESS [ENTER] IN THIS TERMINAL to continue."
+echo "============================================================"
+read -p "Waiting for Vitals setup... Press Enter: "
+
+# 2.2.5. System tray
+echo "Installing Foamy Tray plugin..."
+omarchy plugin add https://github.com/foamrider/foamy-tray.git --enable
+echo "============================================================"
+echo " ACTION REQUIRED: System Tray plugin installed!"
+echo " Ensure your background apps (Steam, Discord) show up on the bar."
+echo " Once done, PRESS [ENTER] IN THIS TERMINAL to continue."
+echo "============================================================"
+read -p "Waiting for System Tray setup... Press Enter: "
+
+
+# Cheching the system is a Pc or a latop  (does we have the battery or not)
+if ls /sys/class/power_supply/ | grep -q "^BAT"; then
+    echo "Battery found! Device identified as a Laptop."
+    echo "Installing Foamy Power battery plugin..."
+    omarchy plugin add https://github.com/foamrider/foamy-power.git --enable
+    echo "============================================================"
+    echo " ACTION REQUIRED: Laptop Battery plugin installed!"
+    echo " Configure separate AC and Battery profiles if needed."
+    echo " Once done, PRESS [ENTER] IN THIS TERMINAL to continue."
+    echo "============================================================"
+    read -p "Waiting for Battery setup... Press Enter: "
+else
+    echo "No battery found. Device identified as a Desktop PC. Skipping battery plugin."
+fi
+
+echo "All plugins configured successfully! Moving to the final stage..."
+
+
 
 
 #----------------------------------Part 3 : Finish-----------------------------
