@@ -1,13 +1,14 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.0 - Bug fixes (( i am lazy @ss to whrite what i fixed or what )) 
+#Version 1.1 - The few thing added  
 #Time of editing is Monday 28 September 2026 in 18:28 
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #Null - making sure that the scipt not will fall while active and make snapshot 
 set -euo pipefail
 clear
 #Starting to logging things 
-exec > >(tee -a ~/omarchy-setup.log) 2>&1
+LOG_FILE="$HOME/omarchy-setup-$(date +%Y%m%d-%H%M%S).log"
+exec > >(tee -a "$LOG_FILE") 2>&1
 # Cheching that system is even omarchy
 if ! grep -qi "omarchy" /etc/os-release 2>/dev/null; then
     echo "============================================================"
