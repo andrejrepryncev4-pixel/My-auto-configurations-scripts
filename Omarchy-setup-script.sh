@@ -1,4 +1,10 @@
 #!/bin/bash
+
+#Null - making sure that the scipt not will fall while active and make snapshot 
+set -euo pipefail
+#Null.1 - Starting to make snapshot cuz we need this 
+sudo snapper create --type single --description "Before script"
+
 #----------------------------------Part 0 : Prerairing things ---------------------------------
 #0.0.0 Cheching that system is omarchy
 if ! grep -qi "omarchy" /etc/os-release 2>/dev/null; then
@@ -13,7 +19,7 @@ echo "System verified: Omarchy detected."
 
 #0.0.2 Cheching the internet connection 
 echo "Checking internet connection..."
-if ! ping -c 1 -W 2 8.8.8.8 > /dev/null 2>&1; then 
+if ! curl -s --max-time 3 https://archlinux.org> /dev/null 2>&1; then 
     echo " ERROR: No internet connection detected!"
     echo " This script cannot work without internet. Exiting now..."
     exit 1
@@ -33,13 +39,13 @@ GPU_INFO=$(lspci | grep -iE 'vga|3d')
 
 if echo "$GPU_INFO" | grep -iq "nvidia"; then
     echo "NVIDIA card detected. Installing official proprietary drivers..."
-    sudo pacman -S --noconfirm nvidia-utils lib32-nvidia-utils
+    sudo pacman -S --needed --noconfirm nvidia-utils lib32-nvidia-utils
 elif echo "$GPU_INFO" | grep -iq "amd"; then
     echo "AMD card detected. Installing open-source Radeon Vulkan drivers..."
-    sudo pacman -S --noconfirm vulkan-radeon lib32-vulkan-radeon lib32-mesa
+    sudo pacman -S --needed --noconfirm vulkan-radeon lib32-vulkan-radeon lib32-mesa
 elif echo "$GPU_INFO" | grep -iq "intel"; then
     echo "Intel graphics detected. Installing Intel Vulkan drivers..."
-    sudo pacman -S --noconfirm vulkan-intel lib32-vulkan-intel lib32-mesa
+    sudo pacman -S --needed --noconfirm vulkan-intel lib32-vulkan-intel lib32-mesa
 else
     echo "Generic or Virtual GPU detected. Skipping specialized drivers.And sorry what the hell the gpu do you have ?"
 fi
@@ -72,8 +78,6 @@ fi
 
 
 
-#0.1 Starting to make snapshot cuz we need this 
-sudo snapper create --type single --description "Before script"
 
 #0.2 Finding the fastes mirror updating transaction keys and updating data of pacman aur and the installing flatpack 
 sudo cachyos-rate-mirrors > /dev/null 2>&1
@@ -146,19 +150,19 @@ hyprctl reload
 for pkg in chromium  aether kdenlive moonlight-qt obs-studio cliamp; do
   pacman -Qq "$pkg" &>/dev/null && sudo pacman -R --noconfirm "$pkg"
 done
-omarchy-webapp-remove hey
-omarchy-webapp-remove basecamp
-omarchy-webapp-remove chatgpt
-omarchy-webapp-remove whatsapp
-omarchy-webapp-remove x
-omarchy-webapp-remove zoom
-omarchy-webapp-remove google-maps       
-omarchy-webapp-remove google-messages
+omarchy-webapp-remove hey || true
+omarchy-webapp-remove basecamp || true
+omarchy-webapp-remove chatgpt || true
+omarchy-webapp-remove whatsapp || true
+omarchy-webapp-remove x || true
+omarchy-webapp-remove zoom || true
+omarchy-webapp-remove google-maps || true
+omarchy-webapp-remove google-messages || true
 
 
 
 #2.1 Installing what neeeded from pacman/aur
-sudo pacman -S --noconfirm firefox base-devel git jre-openjdk 7zip  qbittorrent python  gnome-boxes steam htop 
+sudo pacman -S --needed --noconfirm firefox base-devel git jre-openjdk 7zip  qbittorrent python  gnome-boxes steam htop 
 
 #2.1.1.1 Setting the firefox and links for it as main and rebooting hyperland 
 xdg-settings set default-web-browser firefox.desktop
