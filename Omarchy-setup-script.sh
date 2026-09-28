@@ -1,8 +1,7 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version ?? idk i a;lrerady patched that scipt so much i dont even remember but thtats fine 
+#Version 1.0 - Bug fixes (( i am lazy @ss to whrite what i fixed or what )) 
 #Time of editing is Monday 28 September 2026 in 18:28 
-if [[ "${1:-}" == "--dry-run" ]]
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #Null - making sure that the scipt not will fall while active and make snapshot 
 set -euo pipefail
@@ -183,7 +182,7 @@ sudo pacman -S --needed --noconfirm wine wine-mono wine-gecko winetricks
 yay -S --needed --noconfirm ttf-ms-fonts
 
 #2.1.4 Yay installing things 
-yay -S --needed --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify elyprismlauncher-bin hydra-launcher-bin
+yay -S --needed --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify elyprismlauncher-bin hydra-launcher-bin || true 
 
 # 2.2 ADDED: All required Qylock, Qt5, Qt6, and GStreamer dependencies
 echo "--> Installing login screen theme dependencies..."
