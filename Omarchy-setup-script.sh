@@ -1,5 +1,11 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
+#Version ?? idk i a;lrerady patched that scipt so much i dont even remember but thtats fine 
+#Time of editing is Monday 28 September 2026 in 18:28 
+if [[ "${1:-}" == "--dry-run" ]]
+#omarchy-setup script from Andrejrepryncev-Pixel4
+#Null - making sure that the scipt not will fall while active and make snapshot 
+set -euo pipefail
 clear
 #Starting to logging things 
 exec > >(tee -a ~/omarchy-setup.log) 2>&1
@@ -13,8 +19,6 @@ if ! grep -qi "omarchy" /etc/os-release 2>/dev/null; then
 fi
 echo "System verified: Omarchy detected."
 
-#Null - making sure that the scipt not will fall while active and make snapshot 
-set -euo pipefail
 #Null.1 - Starting to make snapshot cuz we need this 
 
 if ! sudo snapper list-configs > /dev/null 2>&1; then
@@ -69,7 +73,7 @@ HARDWARE_INFO=$(lspci; lsusb)
 #0.0.2.1  Wi-Fi check :
 if echo "$HARDWARE_INFO" | grep -iqE "wireless|wi-fi|wlan|802.11"; then
     echo "Wi-Fi adapter detected. Ensuring network utilities are installed..."
-    sudo pacman -S --noconfirm iw networkmanager
+    sudo pacman -S --needed --noconfirm iw networkmanager
 else
     echo "No Wi-Fi adapter detected. Skipping wireless software."
 fi
@@ -77,7 +81,7 @@ fi
 #0.0.2.2 Bluetooth Checking
 if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     echo "Bluetooth adapter detected. Installing BlueZ stack and Blueman manager..."
-    sudo pacman -S --noconfirm bluez bluez-utils blueman
+    sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
     
     # Turning on the bluetooth service 
     sudo systemctl enable --now bluetooth > /dev/null 2>&1
@@ -93,7 +97,7 @@ sudo pacman-key --init
 sudo pacman-key --populate archlinux cachyos > /dev/null 2>&1
 sudo cachyos-rate-mirrors > /dev/null 2>&1
 sudo pacman -Syu --noconfirm
-sudo pacman -S --noconfirm flatpak
+sudo pacman -S --needed --noconfirm flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 #----------------------------------Part 1 : Customisations---------------------------------
@@ -110,8 +114,7 @@ fi
 # 1.2 Pasting the eng/ru layout in the system and making it swith 
 
 INPUT_CONFIG="$HYPR_DIR/input.lua"
-INPUT_SETTINGS='
- hl.config({
+INPUT_SETTINGS=' hl.config({
    input = {
      kb_layout = "us,ru",
     kb_options = "grp:alt_shift_toggle",
@@ -128,14 +131,10 @@ fi
 
 # 1.4 Allpying the looknfeel lua in configuration the transperency and the workspace shifting 
 LOOK_CONFIG="$HYPR_DIR/looknfeel.lua"
-LOOK_SETTINGS='
---      The transperency of terminal 
-hl.window_rule({
+LOOK_SETTINGS='hl.window_rule({
   match = {class = "foot"},
   opacity = "0.8 override 0.8 override 1.0 override",
 })
-
---      Animation of workspace changing
 hl.animation({leaf = "workspaces", enabled = true, speed = 10, bezier = "default", style = "slide"})'
 
 if grep -q 'leaf = "workspaces"' "$LOOK_CONFIG" 2>/dev/null; then
@@ -188,7 +187,7 @@ yay -S --needed --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify ely
 
 # 2.2 ADDED: All required Qylock, Qt5, Qt6, and GStreamer dependencies
 echo "--> Installing login screen theme dependencies..."
-sudo pacman -S --noconfirm \
+sudo pacman -S --needed --noconfirm \
     sddm perl \
     qt5-declarative qt5-graphicaleffects qt5-quickcontrols2 qt5-multimedia \
     qt6-multimedia qt6-multimedia-ffmpeg \
@@ -207,4 +206,3 @@ if [[ "$answer" =~ ^[Yy]$ ]]; then
 else
     echo "Ok, no reboot. Do it manually when ready."
 fi
-sudo reboot
