@@ -1,12 +1,9 @@
 #!/bin/bash
-
-#Null - making sure that the scipt not will fall while active and make snapshot 
-set -euo pipefail
-#Null.1 - Starting to make snapshot cuz we need this 
-sudo snapper create --type single --description "Before script"
-
-#----------------------------------Part 0 : Prerairing things ---------------------------------
-#0.0.0 Cheching that system is omarchy
+#omarchy-setup script from Andrejrepryncev-Pixel4
+clear
+#Starting to logging things 
+exec > >(tee -a ~/omarchy-setup.log) 2>&1
+# Cheching that system is even omarchy
 if ! grep -qi "omarchy" /etc/os-release 2>/dev/null; then
     echo "============================================================"
     echo " ERROR: This system is NOT Omarchy!"
@@ -16,8 +13,20 @@ if ! grep -qi "omarchy" /etc/os-release 2>/dev/null; then
 fi
 echo "System verified: Omarchy detected."
 
+#Null - making sure that the scipt not will fall while active and make snapshot 
+set -euo pipefail
+#Null.1 - Starting to make snapshot cuz we need this 
 
-#0.0.2 Cheching the internet connection 
+if ! sudo snapper list-configs > /dev/null 2>&1; then
+    echo "Snapper not configured. Skipping snapshot."
+else
+   sudo snapper create --type single --description "Before script"
+fi
+
+
+
+#----------------------------------Part 0 : Prerairing things ---------------------------------
+#0.0.0 Cheching the internet connection 
 echo "Checking internet connection..."
 if ! curl -s --max-time 3 https://archlinux.org> /dev/null 2>&1; then 
     echo " ERROR: No internet connection detected!"
@@ -26,14 +35,14 @@ if ! curl -s --max-time 3 https://archlinux.org> /dev/null 2>&1; then
 fi
 echo "Internet connection verified. Moving forward..."
 
-# 0.0.3 Ensure multilib is enabled (Crucial for Steam & 32-bit Wine drivers)
+# 0.0.1 Ensure multilib is enabled (Crucial for Steam & 32-bit Wine drivers)
 if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
     echo "Enabling [multilib] repository in pacman.conf..."
     echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
     sudo pacman -Sy
 fi
 
-#0.0.3.1 Auto-Detect Graphics Card and Install 32-bit & Vulkan Drivers
+#0.0.0.1 Auto-Detect Graphics Card and Install 32-bit & Vulkan Drivers
 echo "Detecting graphics hardware..."
 GPU_INFO=$(lspci | grep -iE 'vga|3d')
 
@@ -42,7 +51,7 @@ if echo "$GPU_INFO" | grep -iq "nvidia"; then
     sudo pacman -S --needed --noconfirm nvidia-utils lib32-nvidia-utils
 elif echo "$GPU_INFO" | grep -iq "amd"; then
     echo "AMD card detected. Installing open-source Radeon Vulkan drivers..."
-    sudo pacman -S --needed --noconfirm vulkan-radeon lib32-vulkan-radeon lib32-mesa
+    sudo pacman -S --needed --noconfirm mesa vulkan-radeon lib32-vulkan-radeon lib32-mesa
 elif echo "$GPU_INFO" | grep -iq "intel"; then
     echo "Intel graphics detected. Installing Intel Vulkan drivers..."
     sudo pacman -S --needed --noconfirm vulkan-intel lib32-vulkan-intel lib32-mesa
@@ -53,11 +62,11 @@ fi
 
 
 
-# 0.0.4 Auto-Detect Wi-Fi & Bluetooth Hardware and Install Utilities
+# 0.0.2 Auto-Detect Wi-Fi & Bluetooth Hardware and Install Utilities
 echo "Checking for wireless and connectivity hardware..."
-HARDWARE_INFO=$(lspci && lsusb)
+HARDWARE_INFO=$(lspci; lsusb)
 
-#0.0.4.1  Wi-Fi check :
+#0.0.2.1  Wi-Fi check :
 if echo "$HARDWARE_INFO" | grep -iqE "wireless|wi-fi|wlan|802.11"; then
     echo "Wi-Fi adapter detected. Ensuring network utilities are installed..."
     sudo pacman -S --noconfirm iw networkmanager
@@ -65,7 +74,7 @@ else
     echo "No Wi-Fi adapter detected. Skipping wireless software."
 fi
 
-#0.0.4.2 Bluetooth Checking
+#0.0.2.2 Bluetooth Checking
 if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     echo "Bluetooth adapter detected. Installing BlueZ stack and Blueman manager..."
     sudo pacman -S --noconfirm bluez bluez-utils blueman
@@ -80,12 +89,12 @@ fi
 
 
 #0.2 Finding the fastes mirror updating transaction keys and updating data of pacman aur and the installing flatpack 
-sudo cachyos-rate-mirrors > /dev/null 2>&1
 sudo pacman-key --init
 sudo pacman-key --populate archlinux cachyos > /dev/null 2>&1
+sudo cachyos-rate-mirrors > /dev/null 2>&1
 sudo pacman -Syu --noconfirm
 sudo pacman -S --noconfirm flatpak
-
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 #----------------------------------Part 1 : Customisations---------------------------------
 
@@ -127,10 +136,9 @@ hl.window_rule({
 })
 
 --      Animation of workspace changing
-hl.animation({leaf = "workspaces", enabled = true, speed = 10, bezier = "default", style = "slide"})
-'
+hl.animation({leaf = "workspaces", enabled = true, speed = 10, bezier = "default", style = "slide"})'
 
-if grep -q "workspaces" "$LOOK_CONFIG" 2>/dev/null; then
+if grep -q 'leaf = "workspaces"' "$LOOK_CONFIG" 2>/dev/null; then
     echo "The configuration already exists not changing anything else"
 else
     echo "$LOOK_SETTINGS" >> "$LOOK_CONFIG"
@@ -172,11 +180,11 @@ hyprctl reload
 
 
 #2.1.2 The sepparate line for wine cuz its important 
-sudo pacman -S --noconfirm wine wine-mono wine-gecko winetricks
-yay -S --noconfirm ttf-ms-fonts
+sudo pacman -S --needed --noconfirm wine wine-mono wine-gecko winetricks
+yay -S --needed --noconfirm ttf-ms-fonts
 
 #2.1.4 Yay installing things 
-yay -S --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify elyprismlauncher-bin hydra-launcher-bin
+yay -S --needed --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify elyprismlauncher-bin hydra-launcher-bin
 
 # 2.2 ADDED: All required Qylock, Qt5, Qt6, and GStreamer dependencies
 echo "--> Installing login screen theme dependencies..."
@@ -188,14 +196,15 @@ sudo pacman -S --noconfirm \
 
 #----------------------------------Part 3 : Finish-----------------------------
 #3.1 Cheching what do we have on a disk and if something finded we addding it to limine
-sudo limine-entry-tool --scan > /dev/null 2>&1
-
+if command -v limine-entry-tool &>/dev/null; then
+    sudo limine-entry-tool --scan > /dev/null 2>&1 || true
+fi
 #3.2 Rebooting 
-echo "Script is finished rebooting in 10 seconds"
-for i in {10..1}; do
-    echo -ne "Rebooting in $i seconds...\r"
-    sleep 1
-done
-
-echo -e "\nRebooting now!"
+echo "Script is finished. Reboot now? [y/N]"
+read -r answer
+if [[ "$answer" =~ ^[Yy]$ ]]; then
+    sudo reboot
+else
+    echo "Ok, no reboot. Do it manually when ready."
+fi
 sudo reboot
