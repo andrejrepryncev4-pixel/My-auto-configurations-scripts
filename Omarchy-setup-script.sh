@@ -1,10 +1,22 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.1 - The few thing added  
-#Time of editing is Monday 28 September 2026 in 18:28 
+#Version 1.3 - Bug fixes and adding things
+#Time of editing is Monday 29 September 2026 in 09:17 
 #omarchy-setup script from Andrejrepryncev-Pixel4
+#And this is my look how i like the system and if you dont like well just write the script for yourself 
 #Null - making sure that the scipt not will fall while active and make snapshot 
+
+
+#----------------------------------Part (Null): Checking if you legit or not---------------------------------
+
 set -euo pipefail
+
+if [ "$EUID" -eq 0 ]; then
+    echo "ERROR: Not launch the script form root!"
+    echo "xdg-settings will go in root settings not in your ."
+    echo "Launch without  sudo: bash $0"
+    exit 1
+fi
 clear
 #Starting to logging things 
 LOG_FILE="$HOME/omarchy-setup-$(date +%Y%m%d-%H%M%S).log"
@@ -19,12 +31,13 @@ if ! grep -qi "omarchy" /etc/os-release 2>/dev/null; then
 fi
 echo "System verified: Omarchy detected."
 
-#Null.1 - Starting to make snapshot cuz we need this 
+#Null.1 - Starting to make snapshot cuz we need this and chehking for it  
 
 if ! sudo snapper list-configs > /dev/null 2>&1; then
-    echo "Snapper not configured. Skipping snapshot."
+    echo "Snapper not append to be here. Exiting now"
+    exit 1
 else
-   sudo snapper create --type single --description "Before script"
+   sudo snapper create -c root --type single --description "Before script"
 fi
 
 
@@ -34,7 +47,7 @@ fi
 echo "Checking internet connection..."
 if ! curl -s --max-time 3 https://archlinux.org> /dev/null 2>&1; then 
     echo " ERROR: No internet connection detected!"
-    echo " This script cannot work without internet. Exiting now..."
+    echo " This script cannot work without internet. Exiting now...And where do you live why no internet here ?"
     exit 1
 fi
 echo "Internet connection verified. Moving forward..."
@@ -86,7 +99,7 @@ if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     # Turning on the bluetooth service 
     sudo systemctl enable --now bluetooth > /dev/null 2>&1
 else
-    echo "No Bluetooth adapter detected. Skipping Bluetooth software."
+    echo "No Bluetooth adapter detected. Skipping Bluetooth software.My mom have blue tooth on pc"
 fi
 
 
@@ -95,11 +108,22 @@ fi
 #0.2 Finding the fastes mirror updating transaction keys and updating data of pacman aur and the installing flatpack 
 sudo pacman-key --init
 sudo pacman-key --populate archlinux cachyos > /dev/null 2>&1
-sudo cachyos-rate-mirrors > /dev/null 2>&1
+if command -v cachyos-rate-mirrors &>/dev/null; then
+    sudo cachyos-rate-mirrors > /dev/null 2>&1
+fi
 sudo pacman -Syu --noconfirm
 sudo pacman -S --needed --noconfirm flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
+# 0.3 Backup of evrything 
+if [ -d "$HOME/.config" ] && [ ! -d "$HOME/.config.bak" ]; then
+    echo "Creating backup of ~/.config..."
+    cp -a "$HOME/.config" "$HOME/.config.bak"
+    echo "Backup created: ~/.config.bak"
+else
+    echo "Backup already exists or ~/.config not found. Skipping."
+fi
+clear
 #----------------------------------Part 1 : Customisations---------------------------------
 
 # 1.0 Going to the derectory of the hyperland setup 
@@ -148,14 +172,14 @@ fi
 # 1.5 Appying it pplying the theme  and restaring wayland 
 THEME_NAME="nord"
 omarchy-theme-set "$THEME_NAME" > /dev/null 2>&1
-hyprctl reload
+hyprctl reload 2>/dev/null || true
 
-
+clear
 #----------------------------------Part 2 : Removing bloatware and installing all what needed---------------------------------
 
 #2.0 Removing bloatware and web apps
 for pkg in chromium  aether kdenlive moonlight-qt obs-studio cliamp; do
-  pacman -Qq "$pkg" &>/dev/null && sudo pacman -R --noconfirm "$pkg"
+  pacman -Qq "$pkg" &>/dev/null && sudo pacman -R --noconfirm "$pkg" || true 
 done
 omarchy-webapp-remove hey || true
 omarchy-webapp-remove basecamp || true
@@ -182,6 +206,12 @@ hyprctl reload
 sudo pacman -S --needed --noconfirm wine wine-mono wine-gecko winetricks
 yay -S --needed --noconfirm ttf-ms-fonts
 
+# 2.1.3 Chehcking for yay 
+if ! command -v yay &>/dev/null; then
+    echo "yay not found downloading via  pacman..."
+    sudo pacman -S --needed --noconfirm yay
+fi
+
 #2.1.4 Yay installing things 
 yay -S --needed --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify elyprismlauncher-bin hydra-launcher-bin || true 
 
@@ -200,8 +230,9 @@ if command -v limine-entry-tool &>/dev/null; then
 fi
 #3.2 Rebooting 
 echo "Script is finished. Reboot now? [y/N]"
-read -r answer
+read -r answer < /dev/tty || answer="n"
 if [[ "$answer" =~ ^[Yy]$ ]]; then
+    clear
     sudo reboot
 else
     echo "Ok, no reboot. Do it manually when ready."
