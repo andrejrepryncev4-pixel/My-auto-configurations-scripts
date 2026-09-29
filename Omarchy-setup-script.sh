@@ -1,7 +1,7 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.3 - Bug fixes and adding things
-#Time of editing is Monday 29 September 2026 in 09:17 
+#Version 1.4 - Another bug fix 
+#Time of editing is Monday 29 September 2026 in 09:25 
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #And this is my look how i like the system and if you dont like well just write the script for yourself 
 #Null - making sure that the scipt not will fall while active and make snapshot 
@@ -13,7 +13,7 @@ set -euo pipefail
 
 if [ "$EUID" -eq 0 ]; then
     echo "ERROR: Not launch the script form root!"
-    echo "xdg-settings will go in root settings not in your ."
+    echo "xdg-settings will go in root settings not in your home derectory"
     echo "Launch without  sudo: bash $0"
     exit 1
 fi
@@ -34,7 +34,7 @@ echo "System verified: Omarchy detected."
 #Null.1 - Starting to make snapshot cuz we need this and chehking for it  
 
 if ! sudo snapper list-configs > /dev/null 2>&1; then
-    echo "Snapper not append to be here. Exiting now"
+    echo "Snapper not configurated. Exiting now"
     exit 1
 else
    sudo snapper create -c root --type single --description "Before script"
@@ -43,7 +43,7 @@ fi
 
 
 #----------------------------------Part 0 : Prerairing things ---------------------------------
-#0.0.0 Cheching the internet connection 
+#0.0 Cheching the internet connection 
 echo "Checking internet connection..."
 if ! curl -s --max-time 3 https://archlinux.org> /dev/null 2>&1; then 
     echo " ERROR: No internet connection detected!"
@@ -52,14 +52,14 @@ if ! curl -s --max-time 3 https://archlinux.org> /dev/null 2>&1; then
 fi
 echo "Internet connection verified. Moving forward..."
 
-# 0.0.1 Ensure multilib is enabled (Crucial for Steam & 32-bit Wine drivers)
+# 0.1 Ensure multilib is enabled (Crucial for Steam & 32-bit Wine drivers)
 if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
     echo "Enabling [multilib] repository in pacman.conf..."
     echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
     sudo pacman -Sy
 fi
 
-#0.0.0.1 Auto-Detect Graphics Card and Install 32-bit & Vulkan Drivers
+#0.1.1 Auto-Detect Graphics Card and Install 32-bit & Vulkan Drivers
 echo "Detecting graphics hardware..."
 GPU_INFO=$(lspci | grep -iE 'vga|3d')
 
@@ -79,11 +79,11 @@ fi
 
 
 
-# 0.0.2 Auto-Detect Wi-Fi & Bluetooth Hardware and Install Utilities
+# 0.1.2 Auto-Detect Wi-Fi & Bluetooth Hardware and Install Utilities
 echo "Checking for wireless and connectivity hardware..."
 HARDWARE_INFO=$(lspci; lsusb)
 
-#0.0.2.1  Wi-Fi check :
+#0.1.3  Wi-Fi check :
 if echo "$HARDWARE_INFO" | grep -iqE "wireless|wi-fi|wlan|802.11"; then
     echo "Wi-Fi adapter detected. Ensuring network utilities are installed..."
     sudo pacman -S --needed --noconfirm iw networkmanager
@@ -91,7 +91,7 @@ else
     echo "No Wi-Fi adapter detected. Skipping wireless software."
 fi
 
-#0.0.2.2 Bluetooth Checking
+#0.1.4 Bluetooth Checking
 if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     echo "Bluetooth adapter detected. Installing BlueZ stack and Blueman manager..."
     sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
@@ -195,27 +195,33 @@ omarchy-webapp-remove google-messages || true
 #2.1 Installing what neeeded from pacman/aur
 sudo pacman -S --needed --noconfirm firefox base-devel git jre-openjdk 7zip  qbittorrent python  gnome-boxes steam htop 
 
-#2.1.1.1 Setting the firefox and links for it as main and rebooting hyperland 
+#2.1.1 Setting the firefox and links for it as main and rebooting hyperland 
 xdg-settings set default-web-browser firefox.desktop
 xdg-mime default firefox.desktop x-scheme-handler/http
 xdg-mime default firefox.desktop x-scheme-handler/https
-hyprctl reload
+hyprctl reload 2>/dev/null || true
 
 
 #2.1.2 The sepparate line for wine cuz its important 
 sudo pacman -S --needed --noconfirm wine wine-mono wine-gecko winetricks
 yay -S --needed --noconfirm ttf-ms-fonts
 
-# 2.1.3 Chehcking for yay 
+# 2.1.3 Chehcking for yay
 if ! command -v yay &>/dev/null; then
-    echo "yay not found downloading via  pacman..."
-    sudo pacman -S --needed --noconfirm yay
+    echo "yay not found. Installing from AUR..."
+    sudo pacman -S --needed --noconfirm base-devel git
+    cd /tmp
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si --noconfirm
+    cd ~
+    rm -rf /tmp/yay
 fi
 
 #2.1.4 Yay installing things 
 yay -S --needed --noconfirm woeusb-gui  happ-desktop-bin vesctop-bin spotify elyprismlauncher-bin hydra-launcher-bin || true 
 
-# 2.2 ADDED: All required Qylock, Qt5, Qt6, and GStreamer dependencies
+# 2.2 All required Qylock, Qt5, Qt6, and GStreamer dependencies
 echo "--> Installing login screen theme dependencies..."
 sudo pacman -S --needed --noconfirm \
     sddm perl \
