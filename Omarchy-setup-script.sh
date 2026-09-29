@@ -1,7 +1,7 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.7 (Release started)  - Zsh + Oh My Zsh, typos fixed
-#Time of editing is Monday 29 September 2026 in 11:53
+#Version 1.7.1 - Fixed || true syntax error, Oh My Zsh check
+#Time of editing is Monday 29 September 2026 in 12:38
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #And this is my look how i like the system and if you dont like well just write the script for yourself
 #Null - making sure that the script not will fall while active and make snapshot
@@ -65,13 +65,13 @@ GPU_INFO=$(lspci | grep -iE 'vga|3d')
 
 if echo "$GPU_INFO" | grep -iq "nvidia"; then
     echo "NVIDIA card detected. Installing official proprietary drivers..."
-    sudo pacman -S --needed --noconfirm nvidia-utils lib32-nvidia-utils
+    sudo pacman -S --needed --noconfirm nvidia-utils lib32-nvidia-utils || true
 elif echo "$GPU_INFO" | grep -iq "amd"; then
     echo "AMD card detected. Installing open-source Radeon Vulkan drivers..."
-    sudo pacman -S --needed --noconfirm mesa vulkan-radeon lib32-vulkan-radeon lib32-mesa
+    sudo pacman -S --needed --noconfirm mesa vulkan-radeon lib32-vulkan-radeon lib32-mesa || true
 elif echo "$GPU_INFO" | grep -iq "intel"; then
     echo "Intel graphics detected. Installing Intel Vulkan drivers..."
-    sudo pacman -S --needed --noconfirm vulkan-intel lib32-vulkan-intel lib32-mesa
+    sudo pacman -S --needed --noconfirm vulkan-intel lib32-vulkan-intel lib32-mesa|| true
 else
     echo "Generic or Virtual GPU detected. Skipping specialized drivers. And sorry what the hell the gpu do you have ?"
 fi
@@ -86,7 +86,7 @@ HARDWARE_INFO=$(lspci; lsusb)
 #0.3.1  Wi-Fi check :
 if echo "$HARDWARE_INFO" | grep -iqE "wireless|wi-fi|wlan|802.11"; then
     echo "Wi-Fi adapter detected. Ensuring network utilities are installed..."
-    sudo pacman -S --needed --noconfirm iw networkmanager
+    sudo pacman -S --needed --noconfirm iw networkmanager || true
 else
     echo "No Wi-Fi adapter detected. Skipping wireless software."
 fi
@@ -94,26 +94,21 @@ fi
 #0.3.2 Bluetooth Checking
 if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     echo "Bluetooth adapter detected. Installing BlueZ stack and Blueman manager..."
-    sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
-    
+    sudo pacman -S --needed --noconfirm bluez bluez-utils blueman || true
     # Turning on the bluetooth service 
     sudo systemctl enable --now bluetooth > /dev/null 2>&1
 else
     echo "No Bluetooth adapter detected. Skipping Bluetooth software. My mom have blue tooth on pc"
 fi
-
-
-
-
 #0.4 Finding the fastest mirror, updating transaction keys and updating data of pacman AUR and installing flatpak
-sudo pacman-key --init
-sudo pacman-key --populate archlinux cachyos > /dev/null 2>&1
+sudo pacman-key --init || true
+sudo pacman-key --populate archlinux cachyos > /dev/null 2>&1 || true
 if command -v cachyos-rate-mirrors &>/dev/null; then
-    sudo cachyos-rate-mirrors > /dev/null 2>&1
+    sudo cachyos-rate-mirrors > /dev/null 2>&1 || true
 fi
-sudo pacman -Syu --noconfirm
-sudo pacman -S --needed --noconfirm flatpak
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+sudo pacman -Syu --noconfirm || true
+sudo pacman -S --needed --noconfirm flatpak || true
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
 
 # 0.5 Backup of everything
 if [ -d "$HOME/.config" ] && [ ! -d "$HOME/.config.bak" ]; then
@@ -127,7 +122,7 @@ clear
 #----------------------------------Part 1 : Customisations( Zsh ) ---------------------------------
 # Preparing zsh + oh my zsh   terminal
 echo "=== Installing Zsh and dependencies ==="
-sudo pacman -S --noconfirm --needed zsh zsh-completions git curl base-devel 
+sudo pacman -S --noconfirm --needed zsh zsh-completions git curl base-devel || true
 
 USER_NAME="$REAL_USER"
 USER_HOME=$(eval echo "~$REAL_USER")  
@@ -142,17 +137,17 @@ echo "=== Non-interactive Oh My Zsh installation ==="
 ZSH_CUSTOM="$USER_HOME/.oh-my-zsh/custom"
 
 # Installing oh my zsh
-echo "=== Downloading Oh My Zsh installer ==="
-OHMYZSH_INSTALLER="/tmp/ohmyzsh-install.sh"
-curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o "$OHMYZSH_INSTALLER"
-
-# Checking hash
-echo "Installer SHA256:"
-sha256sum "$OHMYZSH_INSTALLER"
-
-# From user launch 
-sudo -u "$USER_NAME" sh "$OHMYZSH_INSTALLER" --unattended
-rm -f "$OHMYZSH_INSTALLER"
+if [ -d "$USER_HOME/.oh-my-zsh" ]; then
+    echo "=== Oh My Zsh already installed. Skipping. ==="
+else
+    echo "=== Downloading Oh My Zsh installer ==="
+    OHMYZSH_INSTALLER="/tmp/ohmyzsh-install.sh"
+    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o "$OHMYZSH_INSTALLER"
+    echo "Installer SHA256:"
+    sha256sum "$OHMYZSH_INSTALLER"
+    sudo -u "$USER_NAME" sh "$OHMYZSH_INSTALLER" --unattended
+    rm -f "$OHMYZSH_INSTALLER"
+fi
 
 echo "=== Cloning Zsh plugins ==="
 # Cloning plugins 
@@ -195,14 +190,12 @@ fi
 # Changing default shell to Zsh
 echo "=== Changing default shell to Zsh ==="
 sudo chsh -s /usr/bin/zsh "$REAL_USER"
-
 echo "=== Zsh installation successfully completed! ==="
 
 #----------------------------------Part 1 : Customisations( Hyprland ) ---------------------------------
 
 # 1.0 Going to the directory of the Hyprland setup
 HYPR_DIR="$HOME/.config/hypr"
-
 
 # 1.1 Checking that the directory exists
 if [ ! -d "$HYPR_DIR" ]; then
@@ -242,7 +235,6 @@ else
     echo "The configuration applied in looknfeel"
 fi
 
-
 # 1.5 Applying the theme and restarting Wayland
 THEME_NAME="nord"
 omarchy-theme-set "$THEME_NAME" > /dev/null 2>&1
@@ -264,10 +256,8 @@ omarchy-webapp-remove zoom || true
 omarchy-webapp-remove google-maps || true
 omarchy-webapp-remove google-messages || true
 
-
-
 #2.1 Installing what needed from pacman/aur
-sudo pacman -S --needed --noconfirm firefox  jre-openjdk 7zip  qbittorrent python  gnome-boxes steam htop 
+sudo pacman -S --needed --noconfirm firefox  jre-openjdk 7zip  qbittorrent python  gnome-boxes steam htop || true
 
 #2.1.1 Setting the firefox and links for it as main and rebooting Hyprland
 xdg-settings set default-web-browser firefox.desktop
@@ -275,9 +265,8 @@ xdg-mime default firefox.desktop x-scheme-handler/http
 xdg-mime default firefox.desktop x-scheme-handler/https
 hyprctl reload 2>/dev/null || true
 
-
 #2.1.2 The separate line for wine cuz its important
-sudo pacman -S --needed --noconfirm wine wine-mono wine-gecko winetricks
+sudo pacman -S --needed --noconfirm wine wine-mono wine-gecko winetricks || true
 yay -S --needed --noconfirm ttf-ms-fonts
 
 # 2.1.3 Checking for yay
@@ -300,7 +289,7 @@ sudo pacman -S --needed --noconfirm \
     sddm perl \
     qt5-declarative qt5-graphicaleffects qt5-quickcontrols2 qt5-multimedia \
     qt6-multimedia qt6-multimedia-ffmpeg \
-    gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
+    gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly || true
 
 #----------------------------------Part 3 : Finish-----------------------------
 #3.1 Checking what do we have on a disk and if something found we adding it to Limine
