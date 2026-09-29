@@ -1,6 +1,6 @@
 # My Auto-Configuration Scripts
 
-![Omarchy](https://img.shields.io/badge/Omarchy-only-blueviolet)
+![Omarchy](https://img.shields.io/badge/Omarchy-4.0%20Quattro%2B-blueviolet)
 ![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?logo=gnu-bash&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Last commit](https://img.shields.io/github/last-commit/andrejrepryncev4-pixel/My-auto-configurations-scripts)
@@ -118,11 +118,9 @@ nano ~/omarchy-setup-*.log
 
 ---
 
-**Если ничего не помогло** — заведи [issue](https://github.com/andrejrepryncev4-pixel/My-auto-configurations-scripts/issues) и **приложи** **лог**.
----
+Если ничего не помогло — [заведи issue](https://github.com/andrejrepryncev4-pixel/My-auto-configurations-scripts/issues) и приложи лог.
 
 ---
-
 ## ⚠️ Отказ от ответственности
 
 **Автор не несёт ответственности**, если что-то пошло не так. Это **личный** скрипт, **писался** **для** **себя**, **под** **свои** **вкусы** и **железо**. **Запуская** **его** — **ты** **принимаешь** **риск** **на** **себя**.
@@ -185,7 +183,10 @@ nano ~/omarchy-setup-*.log
 
 Скрипт **ставит** **драйверы** **для** **GPU** **на** **основе** `lspci`.  
 Если **у** **тебя** **нестандартная** **связка** (например, **Optimus** / **hybrid** **graphics**) — **скрипт** **может** **поставить** **не** **то**, **что** **нужно**.  
-**Проверь** **вывод** `lspci | grep -iE 'vga|3d'` **перед** **запуском**.
+Проверь вывод перед запуском:
+```bash
+lspci | grep -iE 'vga|3d'
+```
 
 **⚠️ Используй** **на** **свой** **страх** **и** **риск**.
 
@@ -200,3 +201,8 @@ nano ~/omarchy-setup-*.log
 
 **Andrejrepryncev-Pixel4**  
 GitHub: [@andrejrepryncev4-pixel](https://github.com/andrejrepryncev4-pixel)
+
+---
+
+⭐ Если скрипт зашёл — поставь звёздочку.  
+Если нет — ну, бывает. 😄
