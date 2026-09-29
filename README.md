@@ -3,6 +3,7 @@
 ![Omarchy](https://img.shields.io/badge/Omarchy-4.0%20Quattro%2B-blueviolet)
 ![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?logo=gnu-bash&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/andrejrepryncev4-pixel/My-auto-configurations-scripts)
 ![Last commit](https://img.shields.io/github/last-commit/andrejrepryncev4-pixel/My-auto-configurations-scripts)
 
 Мои скрипты для автоматической настройки систем.  
@@ -54,8 +55,9 @@
 - Интернет
 - Запуск **от обычного пользователя** (не root)
 
-#### Установка
+### Установка
 
+**Вариант 1: через git clone (актуальная версия)**
 ```bash
 git clone https://github.com/andrejrepryncev4-pixel/My-auto-configurations-scripts.git
 cd My-auto-configurations-scripts
