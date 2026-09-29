@@ -12,7 +12,7 @@
 
 ## Скрипты
 
-### `Omarchy-setup-script.sh` (v1.6.1)
+### `Omarchy-setup-script.sh` (v1.7-Release)
 
 Пост-установочная настройка **Omarchy**.
 
@@ -27,12 +27,13 @@
 - ✅ Установка **Firefox**, **Steam**, **Wine**, **Docker**, **virt-manager**
 - ✅ AUR-пакеты через `yay`
 - ✅ Зависимости для **Qylock** (SDDM, Qt5/6, GStreamer)
+- ✅ Установка Zsh + Oh My Zsh (тема clean, плагины autosuggestions + syntax-highlighting)
 
 ### 📦 Что именно устанавливает и настраивает скрипт?
 
 | Категория | Пакеты / Утилиты | Описание | Источник |
 | :--- | :--- | :--- | :--- |
-| **Система и Ядро** | `base-devel`, `git`, `python`, `htop`, `7zip` | Базовые инструменты и монитор. | Pacman |
+| **Система и Ядро** | `base-devel`, `git`, `python`, `htop`, `7zip`, `zsh`, `oh-my-zsh`   | Базовые инструменты и монитор. | Pacman |
 | **Браузер** | `firefox` | Веб-браузер по умолчанию. | Pacman |
 | **Гейминг** | `steam`, `wine`, `wine-mono`, `winetricks` | Steam и слой совместимости Wine. | Pacman |
 | **Сеть и Мультимедиа** | `qbittorrent`, `sddm`, `qt5-*`, `qt6-*` | Сетевые утилиты и библиотеки для темы **Qylock**. | Pacman |
