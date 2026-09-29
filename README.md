@@ -3,6 +3,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?logo=gnu-bash&logoColor=white)
 ![Omarchy](https://img.shields.io/badge/Omarchy-only-blueviolet)
+![Last commit](https://img.shields.io/github/last-commit/andrejrepryncev4-pixel/My-auto-configurations-scripts)
 
 Мои скрипты для автоматической настройки систем.  
 Делаю **для себя** — но если зайдёт, пользуйся.
@@ -39,8 +40,6 @@
 - `snapper` с конфигом `root`
 - Интернет
 - Запуск **от обычного пользователя** (не root)
-- 
-![Last commit](https://img.shields.io/github/last-commit/andrejrepryncev4-pixel/My-auto-configurations-scripts)
 
 #### Запуск
 
