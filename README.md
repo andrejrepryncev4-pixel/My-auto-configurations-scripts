@@ -1,8 +1,8 @@
 # My Auto-Configuration Scripts
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?logo=gnu-bash&logoColor=white)
 ![Omarchy](https://img.shields.io/badge/Omarchy-only-blueviolet)
+![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?logo=gnu-bash&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Last commit](https://img.shields.io/github/last-commit/andrejrepryncev4-pixel/My-auto-configurations-scripts)
 
 Мои скрипты для автоматической настройки систем.  
@@ -46,4 +46,25 @@
 ```bash
 chmod +x Omarchy-setup-script.sh
 ./Omarchy-setup-script.sh
+```
+---
 
+## Восстановление
+
+Если что-то пошло не так:
+
+1. **Снапшот:** `sudo snapper list` → `sudo snapper undochange <N>..0`
+2. **Бэкап конфигов:** `rm -rf ~/.config && mv ~/.config.bak ~/.config`
+3. **Лог:** `cat ~/omarchy-setup-*.log`
+
+---
+
+## Лицензия
+
+**MIT** — делай что хочешь, но без гарантий.  
+Подробнее в [LICENSE](LICENSE).
+
+## Автор
+
+**Andrejrepryncev-Pixel4**  
+GitHub: [@andrejrepryncev4-pixel](https://github.com/andrejrepryncev4-pixel)
