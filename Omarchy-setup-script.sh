@@ -1,7 +1,7 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.5 - Customisation and minor fixes 
-#Time of editing is Monday 29 September 2026 in 09:32 
+#Version 1.6 - Another bug fixes and etc 
+#Time of editing is Monday 29 September 2026 in 09:36
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #And this is my look how i like the system and if you dont like well just write the script for yourself 
 #Null - making sure that the scipt not will fall while active and make snapshot 
@@ -10,6 +10,8 @@
 #----------------------------------Part (Null): Checking if you legit or not---------------------------------
 
 set -euo pipefail
+
+REAL_USER=$(logname 2>/dev/null || echo "${SUDO_USER:-$USER}")
 
 if [ "$EUID" -eq 0 ]; then
     echo "ERROR: Not launch the script form root!"
@@ -83,7 +85,7 @@ fi
 echo "Checking for wireless and connectivity hardware..."
 HARDWARE_INFO=$(lspci; lsusb)
 
-#0.4  Wi-Fi check :
+#0.3.1  Wi-Fi check :
 if echo "$HARDWARE_INFO" | grep -iqE "wireless|wi-fi|wlan|802.11"; then
     echo "Wi-Fi adapter detected. Ensuring network utilities are installed..."
     sudo pacman -S --needed --noconfirm iw networkmanager
@@ -91,7 +93,7 @@ else
     echo "No Wi-Fi adapter detected. Skipping wireless software."
 fi
 
-#0.5 Bluetooth Checking
+#0.3.2 Bluetooth Checking
 if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     echo "Bluetooth adapter detected. Installing BlueZ stack and Blueman manager..."
     sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
@@ -105,7 +107,7 @@ fi
 
 
 
-#0.6 Finding the fastes mirror updating transaction keys and updating data of pacman aur and the installing flatpack 
+#0.4 Finding the fastes mirror updating transaction keys and updating data of pacman aur and the installing flatpack 
 sudo pacman-key --init
 sudo pacman-key --populate archlinux cachyos > /dev/null 2>&1
 if command -v cachyos-rate-mirrors &>/dev/null; then
@@ -115,7 +117,7 @@ sudo pacman -Syu --noconfirm
 sudo pacman -S --needed --noconfirm flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# 0.7 Backup of evrything 
+# 0.5 Backup of evrything 
 if [ -d "$HOME/.config" ] && [ ! -d "$HOME/.config.bak" ]; then
     echo "Creating backup of ~/.config..."
     cp -a "$HOME/.config" "$HOME/.config.bak"
@@ -238,8 +240,10 @@ fi
 echo "Script is finished. Reboot now? [y/N]"
 read -r answer < /dev/tty || answer="n"
 if [[ "$answer" =~ ^[Yy]$ ]]; then
+    echo "Log saved to: $LOG_FILE"
     clear
     sudo reboot
 else
-    echo "Ok, no reboot. Do it manually when ready.Log saved to: $LOG_FILE"
+    echo "Ok, no reboot. Do it manually when ready."
+    echo "Log saved to: $LOG_FILE"    
 fi
