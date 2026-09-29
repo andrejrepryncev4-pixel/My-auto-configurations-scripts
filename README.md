@@ -41,6 +41,13 @@
 - Интернет
 - Запуск **от обычного пользователя** (не root)
 
+#### Установка
+
+```bash
+git clone https://github.com/andrejrepryncev4-pixel/My-auto-configurations-scripts.git
+cd My-auto-configurations-scripts
+```
+
 #### Запуск
 
 ```bash
