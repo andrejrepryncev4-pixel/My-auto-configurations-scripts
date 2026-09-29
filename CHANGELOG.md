@@ -16,3 +16,10 @@
 ### Changed
 - `.zshrc` now prompts before overwrite
 - SHA256 verification for Oh My Zsh installer
+
+## [v1.7.1] - 2026-09-29
+
+### Fixed
+- Syntax error with `|| true` in block 0.4
+- Oh My Zsh installer now checks if already installed
+- `|| true` added to pacman-key commands
