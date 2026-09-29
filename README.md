@@ -13,7 +13,7 @@
 
 ## Скрипты
 
-### `Omarchy-setup-script.sh` (v1.7-Release)
+### `Omarchy-setup-script.sh` (v1.7.1-Bug fix)
 
 Пост-установочная настройка **Omarchy**.
 
