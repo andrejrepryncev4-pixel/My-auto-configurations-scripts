@@ -29,3 +29,17 @@
 ```bash
 chmod +x Omarchy-setup-script.sh
 ./Omarchy-setup-script.sh
+
+**Восстановление**
+
+Если что-то пошло не так:
+
+1. **Снапшот:** `sudo snapper list` → `sudo snapper undochange <N>..0`
+2. **Бэкап конфигов:** `rm -rf ~/.config && mv ~/.config.bak ~/.config`
+3. **Лог:** `cat ~/omarchy-setup-*.log`
+
+
+## Лицензия
+
+MIT — делай что хочешь, но без гарантий.
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
