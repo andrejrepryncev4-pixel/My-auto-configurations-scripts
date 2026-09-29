@@ -1,7 +1,7 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.7 (Release started)  - Zsh + Oh My Zsh, typos fixed
-#Time of editing is Monday 29 September 2026 in 11:53
+#Version 1.6.1 - Just made more beautiful
+#Time of editing is Monday 29 September 2026 in 09:39
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #And this is my look how i like the system and if you dont like well just write the script for yourself
 #Null - making sure that the script not will fall while active and make snapshot
@@ -13,7 +13,7 @@ set -euo pipefail
 REAL_USER=$(logname 2>/dev/null || echo "${SUDO_USER:-$USER}")
 
 if [ "$EUID" -eq 0 ]; then
-    echo "ERROR: Not launch the script from root!"
+    echo "ERROR: Not launch the script form root!"
     echo "xdg-settings will go in root settings not in your home directory"
     echo "Launch without sudo: bash $0"
     exit 1
@@ -47,7 +47,7 @@ fi
 echo "Checking internet connection..."
 if ! curl -s --max-time 3 https://archlinux.org> /dev/null 2>&1; then 
     echo " ERROR: No internet connection detected!"
-    echo " This script cannot work without internet. Exiting now... And where do you live why no internet here ?"
+    echo " This script cannot work without internet. Exiting now...And where do you live why no internet here ?"
     exit 1
 fi
 echo "Internet connection verified. Moving forward..."
@@ -73,7 +73,7 @@ elif echo "$GPU_INFO" | grep -iq "intel"; then
     echo "Intel graphics detected. Installing Intel Vulkan drivers..."
     sudo pacman -S --needed --noconfirm vulkan-intel lib32-vulkan-intel lib32-mesa
 else
-    echo "Generic or Virtual GPU detected. Skipping specialized drivers. And sorry what the hell the gpu do you have ?"
+    echo "Generic or Virtual GPU detected. Skipping specialized drivers.And sorry what the hell the gpu do you have ?"
 fi
 
 
@@ -99,7 +99,7 @@ if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     # Turning on the bluetooth service 
     sudo systemctl enable --now bluetooth > /dev/null 2>&1
 else
-    echo "No Bluetooth adapter detected. Skipping Bluetooth software. My mom have blue tooth on pc"
+    echo "No Bluetooth adapter detected. Skipping Bluetooth software.My mom have blue tooth on pc"
 fi
 
 
@@ -121,7 +121,7 @@ if [ -d "$HOME/.config" ] && [ ! -d "$HOME/.config.bak" ]; then
     cp -a "$HOME/.config" "$HOME/.config.bak"
     echo "Backup created: ~/.config.bak"
 else
-    echo "Backup already exists or ~/.config not found. Skipping. Delete ~/.config.bak manually if you want a fresh backup."
+    echo "Backup already exists or ~/.config not found. Skipping.Delete ~/.config.bak manually if you want a fresh backup."
 fi
 clear
 #----------------------------------Part 1 : Customisations( Zsh ) ---------------------------------
