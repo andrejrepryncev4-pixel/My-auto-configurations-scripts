@@ -3,7 +3,6 @@
 ![Omarchy](https://img.shields.io/badge/Omarchy-4.0%20Quattro%2B-blueviolet)
 ![Shell](https://img.shields.io/badge/Shell-Bash-4EAA25?logo=gnu-bash&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/andrejrepryncev4-pixel/My-auto-configurations-scripts)
 ![Last commit](https://img.shields.io/github/last-commit/andrejrepryncev4-pixel/My-auto-configurations-scripts)
 
 Мои скрипты для автоматической настройки систем.  
