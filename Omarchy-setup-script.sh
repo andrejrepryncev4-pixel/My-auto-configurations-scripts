@@ -1,7 +1,7 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.6 - Another bug fixes and etc 
-#Time of editing is Monday 29 September 2026 in 09:36
+#Version 1.6.1 - Just maked more beautiful 
+#Time of editing is Monday 29 September 2026 in 09:39
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #And this is my look how i like the system and if you dont like well just write the script for yourself 
 #Null - making sure that the scipt not will fall while active and make snapshot 
@@ -245,5 +245,5 @@ if [[ "$answer" =~ ^[Yy]$ ]]; then
     sudo reboot
 else
     echo "Ok, no reboot. Do it manually when ready."
-    echo "Log saved to: $LOG_FILE"    
+    echo "Log saved to: $LOG_FILE"
 fi
