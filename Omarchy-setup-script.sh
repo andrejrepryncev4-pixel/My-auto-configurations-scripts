@@ -1,7 +1,7 @@
 #!/bin/bash
 #omarchy-setup script from Andrejrepryncev-Pixel4
-#Version 1.4 - Another bug fix 
-#Time of editing is Monday 29 September 2026 in 09:25 
+#Version 1.5 - Customisation and minor fixes 
+#Time of editing is Monday 29 September 2026 in 09:32 
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #And this is my look how i like the system and if you dont like well just write the script for yourself 
 #Null - making sure that the scipt not will fall while active and make snapshot 
@@ -14,7 +14,7 @@ set -euo pipefail
 if [ "$EUID" -eq 0 ]; then
     echo "ERROR: Not launch the script form root!"
     echo "xdg-settings will go in root settings not in your home derectory"
-    echo "Launch without  sudo: bash $0"
+    echo "Launch without sudo: bash $0"
     exit 1
 fi
 clear
@@ -59,7 +59,7 @@ if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
     sudo pacman -Sy
 fi
 
-#0.1.1 Auto-Detect Graphics Card and Install 32-bit & Vulkan Drivers
+#0.2 Auto-Detect Graphics Card and Install 32-bit & Vulkan Drivers
 echo "Detecting graphics hardware..."
 GPU_INFO=$(lspci | grep -iE 'vga|3d')
 
@@ -79,11 +79,11 @@ fi
 
 
 
-# 0.1.2 Auto-Detect Wi-Fi & Bluetooth Hardware and Install Utilities
+# 0.3 Auto-Detect Wi-Fi & Bluetooth Hardware and Install Utilities
 echo "Checking for wireless and connectivity hardware..."
 HARDWARE_INFO=$(lspci; lsusb)
 
-#0.1.3  Wi-Fi check :
+#0.4  Wi-Fi check :
 if echo "$HARDWARE_INFO" | grep -iqE "wireless|wi-fi|wlan|802.11"; then
     echo "Wi-Fi adapter detected. Ensuring network utilities are installed..."
     sudo pacman -S --needed --noconfirm iw networkmanager
@@ -91,7 +91,7 @@ else
     echo "No Wi-Fi adapter detected. Skipping wireless software."
 fi
 
-#0.1.4 Bluetooth Checking
+#0.5 Bluetooth Checking
 if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     echo "Bluetooth adapter detected. Installing BlueZ stack and Blueman manager..."
     sudo pacman -S --needed --noconfirm bluez bluez-utils blueman
@@ -105,7 +105,7 @@ fi
 
 
 
-#0.2 Finding the fastes mirror updating transaction keys and updating data of pacman aur and the installing flatpack 
+#0.6 Finding the fastes mirror updating transaction keys and updating data of pacman aur and the installing flatpack 
 sudo pacman-key --init
 sudo pacman-key --populate archlinux cachyos > /dev/null 2>&1
 if command -v cachyos-rate-mirrors &>/dev/null; then
@@ -115,13 +115,13 @@ sudo pacman -Syu --noconfirm
 sudo pacman -S --needed --noconfirm flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# 0.3 Backup of evrything 
+# 0.7 Backup of evrything 
 if [ -d "$HOME/.config" ] && [ ! -d "$HOME/.config.bak" ]; then
     echo "Creating backup of ~/.config..."
     cp -a "$HOME/.config" "$HOME/.config.bak"
     echo "Backup created: ~/.config.bak"
 else
-    echo "Backup already exists or ~/.config not found. Skipping."
+    echo "Backup already exists or ~/.config not found. Skipping.Delete ~/.config.bak manually if you want a fresh backup."
 fi
 clear
 #----------------------------------Part 1 : Customisations---------------------------------
@@ -213,7 +213,7 @@ if ! command -v yay &>/dev/null; then
     cd /tmp
     git clone https://aur.archlinux.org/yay.git
     cd yay
-    makepkg -si --noconfirm
+    sudo -u "$REAL_USER" makepkg -si --noconfirm
     cd ~
     rm -rf /tmp/yay
 fi
@@ -241,5 +241,5 @@ if [[ "$answer" =~ ^[Yy]$ ]]; then
     clear
     sudo reboot
 else
-    echo "Ok, no reboot. Do it manually when ready."
+    echo "Ok, no reboot. Do it manually when ready.Log saved to: $LOG_FILE"
 fi
