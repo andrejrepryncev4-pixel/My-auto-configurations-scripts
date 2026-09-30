@@ -24,7 +24,7 @@
 - ✅ Бэкап `~/.config` → `~/.config.bak`
 - ✅ Настройка раскладки **US/RU**, темы **Nord**, **Hyprland**
 - ✅ Удаление bloatware + web-приложений
-- ✅ Установка **Firefox**, **Steam**, **Wine**, **Docker**, **virt-manager**
+- ✅ Установка **Firefox**, **Steam**, **Wine**, **virt-manager**
 - ✅ AUR-пакеты через `yay`
 - ✅ Зависимости для **Qylock** (SDDM, Qt5/6, GStreamer)
 - ✅ Установка Zsh + Oh My Zsh (тема clean, плагины autosuggestions + syntax-highlighting)
