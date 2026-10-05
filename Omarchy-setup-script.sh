@@ -2,7 +2,7 @@
 #omarchy-setup script from Andrejrepryncev-Pixel4
 #Version 1.7.1 - Fixed || true syntax error, Oh My Zsh check
 #Time of editing is Monday 29 September 2026 in 12:38
-#omarchy-setup script from Andrejrepryncev-Pixel4
+#omarchy-setup script from vab-pixel-4968
 #And this is my look how i like the system and if you dont like well just write the script for yourself
 #Null - making sure that the script not will fall while active and make snapshot
 
