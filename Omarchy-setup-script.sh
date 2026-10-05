@@ -98,7 +98,7 @@ if echo "$HARDWARE_INFO" | grep -iqE "bluetooth|bt "; then
     # Turning on the bluetooth service 
     sudo systemctl enable --now bluetooth > /dev/null 2>&1
 else
-    echo "No Bluetooth adapter detected. Skipping Bluetooth software. My mom have blue tooth on pc"
+    echo "No Bluetooth adapter detected. Skipping Bluetooth serives"
 fi
 #0.4 Finding the fastest mirror, updating transaction keys and updating data of pacman AUR and installing flatpak
 sudo pacman-key --init || true
